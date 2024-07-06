@@ -1,0 +1,1 @@
+[{"username":"admin","password":"admin","name":"Ngoctam","phone":"0879389520","dob":"2003-04-02","purchasedItems":["Bàn Phím Cơ Có Dây Dareu EK75","Camera IP 360 Độ 2MP TP-Link Tapo TC70","HP Pavilion 15 eg3098TU i3 1315U (8C5L9PA)"]}]

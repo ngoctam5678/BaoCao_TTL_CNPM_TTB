@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trang chủ</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Liên kết đến file CSS -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        .header .user-info {
+            font-weight: bold;
+            margin-right: 20px;
+        }
+        .products {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            overflow-x: auto;
+            gap: 20px;
+        }
+        .product {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            text-align: center;
+            flex: 0 0 20%;
+        }
+        .product img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .product h3 {
+            margin: 10px 0;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .login-msg {
+            margin-top: 20px;
+            text-align: center;
+            font-style: italic;
+            color: #555555;
+            display: none;
+        }
+        .auth-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        /*Menu*/
+        .sidenav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+
+        .sidenav a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+
+        .sidenav .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+
+        #main {
+            transition: margin-left .5s;
+            padding: 16px;
+        }
+
+        @media screen and (max-height: 450px) {
+            .sidenav {padding-top: 15px;}
+            .sidenav a {font-size: 18px;}
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('/userinfo')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.username) {
+                        document.getElementById('userGreeting').innerText = `Xin chào, ${data.name}!`;
+                        document.getElementById('userGreeting').style.display = 'block';
+                        document.getElementById('authLinks').style.display = 'none';
+                        document.getElementById('loginMessage').style.display = 'none';
+                        document.getElementById('gotoInfo').style.display = 'block';
+                        document.getElementById('logoutBtn').style.display = 'block';
+                    } else {
+                        document.getElementById('userGreeting').style.display = 'none';
+                        document.getElementById('authLinks').style.display = 'flex';
+                        document.getElementById('loginMessage').style.display = 'block';
+                        document.getElementById('gotoInfo').style.display = 'none';
+                        document.getElementById('logoutBtn').style.display = 'none';
+                    }
+                })
+                .catch(error => console.error('Error fetching user info:', error));
+        });
+
+        function logout() {
+            fetch('/logout', {
+                method: 'GET'
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Đăng xuất thành công');
+                    window.location.href = '/dangnhap';
+                } else {
+                    alert('Đăng xuất thất bại');
+                }
+            })
+            .catch(error => console.error('Error logging out:', error));
+        }
+    </script>
+</head>
+<body>
+    <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="#">About</a>
+        <a href="#">Services</a>
+        <a href="#">Clients</a>
+        <a href="#">Contact</a>
+    </div>
+    <div class="header">
+        <h1>Trang chủ</h1>
+        <div class="header-right">
+            <span id="userGreeting" class="user-info"></span>
+            <div id="authLinks" class="auth-links">
+                <a href="/dangnhap" class="btn">Đăng nhập</a> 
+                <a href="/dangky" class="btn">Đăng ký</a>
+            </div>
+            <button id="gotoInfo" class="btn" style="display: none;"><a href="/thongtin" style="color: #fff; text-decoration: none;">Thông tin</a></button>
+            <button id="logoutBtn" class="btn" onclick="logout()" style="display: none;">Đăng xuất</button>
+            <div id="main">
+                <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="products">
+        <div class="product">
+            <img src="https://img.tgdd.vn/imgt/f_webp,fit_outside,quality_100/https://cdn.tgdd.vn/Products/Images/4547/314634/ban-phim-co-co-day-dareu-ek75-thumb-600x600.jpg" alt="Bàn Phím Cơ Có Dây Dareu EK75">
+            <h3>Bàn Phím Cơ Có Dây Dareu EK75</h3>
+            <p>580.000 đ</p>
+            <form action="/mua" method="post">
+                <input type="hidden" name="product" value="Bàn Phím Cơ Có Dây Dareu EK75">
+                <button type="submit" class="btn">Mua</button>
+            </form>
+        </div>
+        <div class="product">
+            <img src="https://img.tgdd.vn/imgt/f_webp,fit_outside,quality_100/https://cdn.tgdd.vn/Products/Images/4728/235820/camera-ip-360-do-1080p-tp-link-tapo-tc70-trang-thumb-2-600x600.jpg" alt="Camera IP 360 Độ 2MP TP-Link Tapo TC70">
+            <h3>Camera IP 360 Độ 2MP TP-Link Tapo TC70</h3>
+            <p>410.000 đ</p>
+            <form action="/mua" method="post">
+                <input type="hidden" name="product" value="Camera IP 360 Độ 2MP TP-Link Tapo TC70">
+                <button type="submit" class="btn">Mua</button>
+            </form>
+        </div>
+        <div class="product">
+            <img src="https://img.tgdd.vn/imgt/f_webp,fit_outside,quality_100/https://cdn.tgdd.vn/Products/Images/44/313978/hp-pavilion-15-eg3098tu-i3-8c5l9pa-thumb-3-600x600.jpg" alt="HP Pavilion 15 eg3098TU i3 1315U (8C5L9PA)">
+            <h3>HP Pavilion 15 eg3098TU i3 1315U (8C5L9PA)</h3>
+            <p>11.990.000 đ</p>
+            <form action="/mua" method="post">
+                <input type="hidden" name="product" value="HP Pavilion 15 eg3098TU i3 1315U (8C5L9PA)">
+                <button type="submit" class="btn">Mua</button>
+            </form>
+        </div>
+        <div class="product">
+            <img src="https://img.tgdd.vn/imgt/f_webp,fit_outside,quality_100/https://cdn.tgdd.vn/Products/Images/58/310596/cap-type-c-lightning-1m-baseus-glimmer-cb000022-thumb-600x600.jpg" alt="Cáp Type C - Lightning 1m Baseus Glimmer CB000022">
+            <h3>Cáp Type C - Lightning 1m Baseus Glimmer CB000022</h3>
+            <p>100.000 đ</p>
+            <form action="/mua" method="post">
+                <input type="hidden" name="product" value="Cáp Type C - Lightning 1m Baseus Glimmer CB000022">
+                <button type="submit" class="btn">Mua</button>
+            </form>
+        </div>
+        <div class="product">
+            <img src="https://img.tgdd.vn/imgt/f_webp,fit_outside,quality_100/https://cdn.tgdd.vn/Products/Images/522/325501/ipad-air-11-inch-m2-wifi-grey-thumb-600x600.jpg" alt="iPad Air 6 M2 11 inch WiFi 128GB">
+            <h3>iPad Air 6 M2 11 inch WiFi 128GB</h3>
+            <p>16.990.000 đ</p>
+            <form action="/mua" method="post">
+                <input type="hidden" name="product" value="iPad Air 6 M2 11 inch WiFi 128GB">
+                <button type="submit" class="btn">Mua</button>
+            </form>
+        </div>
+        <div class="product">
+            <img src="https://img.tgdd.vn/imgt/f_webp,fit_outside,quality_100/https://cdn.tgdd.vn/Products/Images/11543/234585/tainghe-chup-tai-cosonic-mh601-xanh-la-600x600.jpg" alt="Tai nghe chụp tai Cosonic MH601">
+            <h3>Tai nghe chụp tai Cosonic MH601</h3>
+            <p>260.000 đ</p>
+            <form action="/mua" method="post">
+                <input type="hidden" name="product" value="Tai nghe chụp tai Cosonic MH601">
+                <button type="submit" class="btn">Mua</button>
+            </form>
+        </div>
+        <div class="product">
+            <img src="https://img.tgdd.vn/imgt/f_webp,fit_outside,quality_100/https://cdn.tgdd.vn/Products/Images/44/309667/laptop-asus-rog-flow-z13-gz301vv-i9-lp071w-1-600x600.jpg" alt="Laptop Asus ROG Flow Z13">
+            <h3>Laptop Asus ROG Flow Z13</h3>
+            <p>53.490.000 đ</p>
+            <form action="/mua" method="post">
+                <input type="hidden" name="product" value="Laptop Asus ROG Flow Z13">
+                <button type="submit" class="btn">Mua</button>
+            </form>
+        </div>
+        <div class="product">
+            <img src="https://img.tgdd.vn/imgt/f_webp,fit_outside,quality_100/https://cdn.tgdd.vn/Products/Images/2344/277923/chuot-co-day-rapoo-n3200-xam-01-600x600.jpg" alt="Chuột có dây Rapoo N3200">
+            <h3>Chuột có dây Rapoo N3200</h3>
+            <p>130.000 đ</p>
+            <form action="/mua" method="post">
+                <input type="hidden" name="product" value="Chuột có dây Rapoo N3200">
+                <button type="submit" class="btn">Mua</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="loginMessage" class="login-msg">
+        Bạn chưa đăng nhập!
+    </div>
+
+    <script>
+        function openNav() {
+        document.getElementById("mySidenav").style.width = "250px";
+        document.getElementById("main").style.marginLeft = "250px";
+        }
+
+        function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+        document.getElementById("main").style.marginLeft= "0";
+        }
+    </script>
+</body>
+</html>

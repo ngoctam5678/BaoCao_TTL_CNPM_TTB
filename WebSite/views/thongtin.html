@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông tin người dùng</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f8f8f8;
+            padding: 20px;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .receipt {
+            background-color: #ffffff;
+            padding: 20px;
+            border: 1px solid #ddd;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            text-align: center;
+            margin: 0;
+        }
+        .header, .info, .total {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .info p {
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .info p span {
+            font-weight: bold;
+        }
+        .total p {
+            display: flex;
+            justify-content: space-between;
+            font-size: 18px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            display: block;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .button-container button {
+            width: 48%;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('/userinfo')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('userinfo').innerText = data.error;
+                    } else {
+                        document.getElementById('name').innerText = data.name;
+                        document.getElementById('phone').innerText = data.phone;
+                        document.getElementById('dob').innerText = data.dob;
+                        document.getElementById('purchasedItems').innerText = data.purchasedItems.join(', ');
+                        document.getElementById('totalAmount').innerText = formatCurrency(data.totalAmount); // Format the amount as VND
+                    }
+                })
+                .catch(error => console.error('Error fetching user info:', error));
+        });
+
+        function logout() {
+            fetch('/logout', {
+                method: 'GET' // Change method to GET for logout
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Đăng xuất thành công');
+                    window.location.href = '/dangnhap';  // Redirect to login page after logout
+                } else {
+                    alert('Đăng xuất thất bại');
+                }
+            })
+            .catch(error => console.error('Error logging out:', error));
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+        }
+    </script>
+</head>
+<body>
+    <div class="receipt">
+        <h1>HÓA ĐƠN</h1>
+        <div class="header">
+            <h2>Thông tin người dùng</h2>
+        </div>
+        <div class="info">
+            <p>Tên: <span id="name"></span></p>
+            <p>Số điện thoại: <span id="phone"></span></p>
+            <p>Ngày sinh: <span id="dob"></span></p>
+            <p>Sản phẩm đã mua: <span id="purchasedItems"></span></p>
+        </div>
+        <div class="total">
+            <p>Tổng số tiền đã mua: <span id="totalAmount"></span></p>
+        </div>
+        <div class="button-container">
+            <button onclick="goBack()">Quay lại</button>
+            <button onclick="logout()">Đăng xuất</button>
+        </div>
+    </div>
+</body>
+</html>
